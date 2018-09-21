@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Hello Koa 2 example with async",
     "main": "app.js",
-    "scripts": { 
+    "scripts": {
         "start": "node app.js"
     },
     "keywords": [
@@ -17,6 +17,7 @@
         "url": ""
     },
     "dependencies": {
-        "koa": "^2.5.3"
+        "koa": "^2.5.3",
+        "koa-router": "7.0.0"
     }
 }
