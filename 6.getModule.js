@@ -10,5 +10,8 @@ var hello2 = require('./5.export');
 // hello2.setName('BYVoid 2');
 // hello1.sayHello();  // BYVoid 2
 
-var he = require('./5.export')
+var Hello = require('./5.export')
 console.log(he)
+hello = new Hello();
+hello.setName('BYVoid');
+hello.sayHello(); 
