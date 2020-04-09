@@ -75,11 +75,11 @@ $ supervisor app.js
 
 阻塞模式下，一个线程只能处理一项任务，要想提高吞吐量必须通过多线程。而非阻塞 模式下，一个线程永远在执行计算操作，这个线程所使用的 CPU 核心利用率永远是 100%， I/O 以事件的方式通知。在阻塞模式下，多线程往往能提高系统吞吐量，因为一个线程阻塞 时还有其他线程在工作，多线程可以让 CPU 资源不被阻塞中的线程浪费。而在非阻塞模式 下，线程不会被 I/O 阻塞，永远在利用 CPU。多线程带来的好处仅仅是在多核 CPU 的情况 下利用更多的核，而Node.js的单线程也能带来同样的好处。这就是为什么 Node.js 使用了单 线程、非阻塞的事件编程模式。
 
-![image-20200401165723796](/node.js.assets/image-20200401165723796.png)
+![image-20200401165723796](node.js.assets/image-20200401165723796.png)
 
 
 
-![image-20200401165810990](/node.js.assets/image-20200401165810990.png)
+![image-20200401165810990](node.js.assets/image-20200401165810990.png)
 
 
 
@@ -100,8 +100,22 @@ $ supervisor app.js
 
 #### 模块和包
 
+##### 模块
+
 模块是 Node.js 应用程序的基本组成部分，文件和模块是一一对应的。换言之，一个 Node.js 文件就是一个模块，这个文件可能是 JavaScript 代码、JSON 或者编译过的 C/C++ 扩展。 在前面章节的例子中，我们曾经用到了 var http = require('http')，其中 http 是 Node.js 的一个核心模块，其内部是用 C++ 实现的，外部用 JavaScript 封装。我们通过 require 函数获取了这个模块，然后才能使用其中的对象。
 
-
-
 **注意** exports 直接赋值代替对 module.exports 赋值。 exports 实际上只是一个和 module.exports 指向同一个对象的变量， 它本身会在模块执行结束后释放，但 module 不会，因此只能通过指定 module.exports 来改变访问接口。
+
+
+
+##### 包
+
+Node.js 根 据 CommonJS 规范实现了包机制，开发了 npm来解决包的发布和获取需求。
+
+Node.js 的包是一个目录，其中包含一个 JSON 格式的包说明文件 package.json。严格符 合 CommonJS 规范的包应该具备以下特征：
+
+-  package.json 必须在包的顶层目录下； 
+-  二进制文件应该在 bin 目录下； 
+-  JavaScript 代码应该在 lib 目录下； 
+-  文档应该在 doc 目录下； 
+-  单元测试应该在 test 目录下。
