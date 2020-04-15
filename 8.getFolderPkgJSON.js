@@ -1,2 +1,2 @@
-var somePackage = require('./assets/somepackageFold/lib/ interface');
+var somePackage = require('./assets/somepackageFold');
 somePackage.hello(); 

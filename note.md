@@ -1,6 +1,6 @@
 
 
-#### 浏览器兼容性问题 
+#### 浏览器兼容性问题的造成 
 
 尽管有 ECMAScript 作为 JavaScript 的语法和语言特性标准，但是关于 JavaScript 其他方 面的规范还是不明确，同时不同浏览器又加入了各自特有的对象、函数。这也就是为什么这 么多年来同样的 JavaScript 代码会在不同的浏览器中呈现出不同的效果，甚至在一个浏览器 中可以执行，而在另一个浏览器中却不可以。 要注意的是，浏览器的兼容性问题并不只是由 JavaScript 的兼容性造成的，而是 DOM、 BOM、CSS 解析等不同的行为导致的。
 
@@ -119,3 +119,167 @@ Node.js 的包是一个目录，其中包含一个 JSON 格式的包说明文件
 -  JavaScript 代码应该在 lib 目录下； 
 -  文档应该在 doc 目录下； 
 -  单元测试应该在 test 目录下。
+
+###### package.json
+
+Node.js 在调用某个包时，会首先检查包中 package.json 文件的 main 字段，将其作为
+包的接口模块，如果 package.json 或 main 字段不存在，会尝试寻找 index.js 或 index.node 作
+为包的接口。
+
+package.json 是 CommonJS 规定的用来描述包的文件，完全符合规范的 package.json 文
+件应该含有以下字段。
+ name：包的名称，必须是唯一的，由小写英文字母、数字和下划线组成，不能包含
+空格。
+ description：包的简要说明。
+ version：符合语义化版本识别①规范的版本字符串。
+ keywords：关键字数组，通常用于搜索。
+ maintainers：维护者数组，每个元素要包含 name、email（可选）、web（可选）
+字段。
+ contributors：贡献者数组，格式与maintainers相同。包的作者应该是贡献者
+数组的第一个元素。
+ bugs：提交bug的地址，可以是网址或者电子邮件地址。
+ licenses：许可证数组，每个元素要包含 type （许可证的名称）和 url （链接到
+许可证文本的地址）字段。
+ repositories：仓库托管地址数组，每个元素要包含 type （仓库的类型，如 git ）、
+url （仓库的地址）和 path （相对于仓库的路径，可选）字段。
+ dependencies：包的依赖，一个关联数组，由包名称和版本号组成。
+
+```
+{
+ "name": "mypackage",
+ "description": "Sample package for CommonJS. This package demonstrates the required
+elements of a CommonJS package.",
+ "version": "0.7.0",
+ "keywords": [
+ "package",
+ "example"
+ ],
+ "maintainers": [
+ {
+ "name": "Bill Smith",
+ "email": "bills@example.com",
+ }
+ ],
+ "contributors": [
+ {
+ "name": "BYVoid",
+ "web": "http://www.byvoid.com/"
+ }
+ ],
+ "bugs": {
+ "mail": "dev@example.com",
+ "web": "http://www.example.com/bugs"
+ },
+ "licenses": [
+ {
+ "type": "GPLv2",
+ "url": "http://www.example.org/licenses/gpl.html"
+ }
+ ],
+ "repositories": [
+ {
+ "type": "git",
+ "url": "http://github.com/BYVoid/mypackage.git"
+ }
+ ],
+ "dependencies": {
+ "webkit": "1.2",
+ "ssl": {
+ "gnutls": ["1.0", "2.0"],
+ "openssl": "0.9.8"
+ }
+ }
+} 
+```
+
+###### Node.js 包管理器
+
+Node.js包管理器，即npm是 Node.js 官方提供的包管理工具，它已经成了 Node.js 包的 标准发布平台，用于 Node.js 包的发布、传播、依赖控制。npm 提供了命令行工具，使你可 以方便地下载、安装、升级、删除包，也可以让你作为开发者发布并维护包。
+
+1. 获取一个包 使用 npm 安装包的命令格式为：
+
+   ```
+   npm [install/i] [package_name] 
+   ```
+
+2. 本地模式和全局模式
+
+   在使用 npm 安装包的时候，有两种模式：本地模式和全局模式。默认情况下我们使用 npm install命令就是采用本地模式，即把包安装到当前目录的 node_modules 子目录下。Node.js 的 require 在加载模块时会尝试搜寻 node_modules 子目录，因此使用 npm 本地模式安装 的包可以直接被引用。 npm 还有另一种不同的安装模式被成为全局模式，使用方法为：
+
+   ```
+   npm [install/i] -g [package_name] 
+   ```
+
+   **使用全局模式的原因：** 多数时候并不是因为许多程序都有可能用到它，为了减少多重副本而使用全局模式，而是因为本地模式不会注册 PATH 环境变量。举例说明，我们安装 supervisor 是为了在命令行中运行它，譬如直接运行 supervisor script.js，这时就需要在 PATH 环境变量中注册 supervisor。npm 本地模式仅仅是把包安装到 node_modules 子目录下，其中 的 bin 目录没有包含在 PATH 环境变量中，不能直接在命令行中调用。而
+
+###### 创建/发布包
+
+**创建：** 创建一个目录，在这个目录下运行`npm init`，创建一个符合npm规范的package.json文件，创建一个 index.js 作为包的接口，一个简单的包就制作完成了。
+
+**账号密码**：在发布前，我们还需要获得一个账号用于今后维护自己的包，使用 npm adduser 根据 提示输入用户名、密码、邮箱，等待账号创建完成。完成后可以使用 npm whoami 测验是 否已经取得了账号。
+
+**发布**：接下来，在 package.json 所在目录下运行 `npm publish`，稍等片刻就可以完成发布了。 打开浏览器，访问 http://search.npmjs.org/ 就可以找到自己刚刚发布的包了。现在我们可以在 世界的任意一台计算机上使用 `npm install byvoidmodule` 命令来安装它。
+
+**更新和取消发布：**如果你的包将来有更新，只需要在 package.json 文件中修改 version 字段，然后重新 使用 npm publish 命令就行了。如果你对已发布的包不满意（比如我们发布的这个毫无意 义的包），可以使用 npm unpublish 命令来取消发布。
+
+
+
+#### 调试
+
+使用`--inspect`直接调试运行脚本
+
+```
+node --inspect debug.js
+```
+
+有时脚本较小，还未打开工具就运行完成了，此时可以使用`--inspect-brk`设置在第一行就打断点。`=9229`是设置端口号
+
+```
+node --inspect-brk=9229 app.js
+```
+
+
+
+### node.js核心模块
+
+ 全局对象；  常用工具；  事件机制；  文件系统访问；  HTTP 服务器与客户端。
+
+#### 全局对象
+
+##### 全局对象global
+
+JavaScript 中有一个特殊的对象，称为全局对象（Global Object），它及其所有属性都可 以在程序的任何地方访问，即全局变量。在浏览器 JavaScript 中，通常 window 是全局对象， 而 Node.js 中的全局对象是 **global**，所有全局变量（除了 global 本身以外）都是 global 对象的属性。
+
+##### process
+
+process 是一个全局变量，即 global 对象的属性。它用于描述当前 Node.js 进程状态 的对象，提供了一个与操作系统的简单接口。
+
+- `process.argv`命令行参数数组，第一个元素是 node，第二个元素是脚本文件名， 从第三个元素开始每个元素是一个运行参数。
+
+  ```
+  $ node some.js 1991 name=b --v "car"
+  > [ 'node',
+   '/home/byvoid/argv.js',
+   '1991',
+   'name=byvoid',
+   '--v',
+   'Carbo Kuo' ] 
+  ```
+
+- `process.stdout`是标准输出流，通常我们使用的 console.log() 向标准输出打印 字符，而 process.stdout.write() 函数提供了更底层的接口。
+
+- `process.stdin`是标准输入流，初始时它是被暂停的，要想从标准输入读取数据， 你必须恢复流，并手动编写流的事件响应函数。
+
+  ```
+  process.stdin.resume();
+  process.stdin.on('data', function(data) {
+   process.stdout.write('read from console: ' + data.toString());
+  }); 
+  ```
+
+  
+
+
+
+
+
