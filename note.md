@@ -277,9 +277,60 @@ process 是一个全局变量，即 global 对象的属性。它用于描述当�
   }); 
   ```
 
-  
+- `process.nextTick(callback)`的功能是为事件循环设置一项任务，Node.js 会在 下次事件循环调响应时调用 callback。
+
+##### console
+
+```javascript
+console.log('Hello world');	// Hello world
+console.log('byvoid%diovyb');	// byvoid%diovyb
+console.log('byvoid%diovyb', 1991); 	// byvoid1991iovyb
+```
+
+**console.log()**：向标准输出流打印字符并以换行符结束。
+
+**console.error()**：与 console.log() 用法相同，只是向标准错误流输出。 
+
+**console.trace()**：向标准错误流输出当前的调用栈。
 
 
+
+##### 常用工具 util
+
+**util.inherits：**是一个实现对象间原型继承 的函数。
+
+```javascript
+var util = require('util');
+function Base() {
+	this.name = 'base';
+	this.base = 1991;
+
+	this.sayHello = function() {
+		console.log('Hello ' + this.name);
+	};
+}
+Base.prototype.showName = function() {
+	console.log(this.name); 
+};
+function Sub() {
+	this.name = 'sub';
+}
+util.inherits(Sub, Base);
+
+var objBase = new Base();
+objBase.showName();
+objBase.sayHello();
+console.log(objBase);
+
+var objSub = new Sub();
+objSub.showName();
+//objSub.sayHello();
+console.log(objSub); 
+```
+
+只继承原型上的方法；
+
+⚠️ 原型上的方法无法被console.log出来
 
 
 
